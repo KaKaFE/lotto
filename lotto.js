@@ -4,54 +4,84 @@ class Lotto {
     constructor() {
         this.money = 0;
         this.list = [];
-        this.당첨테이블 = {
+        this.winTable = {
             3: {
-                당첨개수: 0,
-                당첨금액: 5000
-            }, 4: {}, 5: {}, 6: {}
+                winNum: 0,
+                prize: 5000
+            },
+            4: {
+                winNum: 0,
+                prize: 10000
+            },
+            5: {
+                winNum: 0,
+                prize: 100000
+            },
+            6: {
+                winNum: 0,
+                prize: 1000000
+            }
         }
-    } 
+    }
+    buyLotto(money) {
+        this.money = money;
+        for (let i = 0; i < money / 1000; i++){
+            this.list.push(this.createLotto())
+        }
+        this.print();
+    }
+    createLotto() {
+        const lottoNumberList = [];
+        const numList = new Array(45).fill(0).map((num, i) => i + 1);
+        for(let i = 0; i < 6; i++) {
+            const randNum = Math.floor(Math.random() * numList.length)
+            const lottoNumber = numList.splice(randNum, 1)[0];
+    
+            lottoNumberList.push(lottoNumber);
+        }
+    
+        return lottoNumberList.sort((a,b) => a-b);
+    }
+    setLuckyNumber(array) {
+        this.matchNumber(this.list, array);
+        let profitRate = this.profitsRate();
+        return profitRate;
+        // print(profitRate)
+    }
+    matchNumber(lottoList, luckyarray) {
+        for (let lottoNum of lottoList) {
+            let count = 0;
+            lottoNum.forEach(num => luckyarray.some(luckyNum => luckyNum === num) ? count++ : count);
+            if (count > 2) this.winTable[count].winNum++
+        }
+    }
+    profitsRate() {
+        let totalPrize = this.sumPrize();
+        return ((totalPrize) / this.money) * 100;
+    }
 
-function buyLotto(money) {
-    this.money = money;
-    반복문 횟수 money / 1000
-    this.list.push(createLotto())
-
-    print();
-}
-function createLotto() {
-    1~45배열
-    return 임의의 6개번호가 담긴 배열;
-}
-
-function setLuckyNumber(array) {
-    matchNumber(this.list, array);
-    let 수익률 = profitsRate();
-    print(수익률)
-}
-function matchNumber(array(this.list), luckyarray) {
-    변수 count(맞은 번호 개수);
-    for (this.list.length 만큼) {
-        //this.list[i].filter(num => arr2.some(luckyNum => luckyNum === num))
-        this.list[i].forEach(num => luckyarray.some(luckyNum => luckyNum === num) ? count++ : count)
-        if(count >2) this.당첨테이블[count].당첨개수++
+    sumPrize(){
+        const totalPrize = Object.keys(this.winTable).reduce((total, count) => {
+            return total += this.winTable[count].winNum * this.winTable[count].prize;
+        }, 0)
+        return totalPrize;
+    }
+    print(profitRate) {
+        if (!arguments) {
+            console.log(this.list);
+        } else {
+            // 당첨프린트
+            // init();
+        }
     }
 }
 
-function profitsRate() {
-    this.당첨테이블, money,
-    let 당첨금액합 = 당첨금액합함수(this.당첨테이블);
-    return ((당첨금액 - money) / money) * 100
-}
-function print(수익률%) {
-    if(!arguments) {
-        발행프린트;
-    } else {
-        당첨프린트;
-        init();
-    }
-}
-function init() {
+const lotto = new Lotto;
+console.log(lotto.buyLotto(3000));
+console.log(lotto.list);
+console.log(lotto.setLuckyNumber([2,15,21,24,43,45]));
 
-}
-}
+// function init() {
+
+// }
+// }
